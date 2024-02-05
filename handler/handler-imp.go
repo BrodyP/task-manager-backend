@@ -1,17 +1,20 @@
 package handler
 
 import (
+	"task-manager/model"
 	"task-manager/usecase"
-
-	"github.com/gin-gonic/gin"
 )
 
 type taskHandlerImpl struct {
 	usecase usecase.Usecase
 }
 
-func (h *taskHandlerImpl) GetAllTask(c *gin.Context) ([]usecase.TaskData, error) {
+func (h taskHandlerImpl) GetAllTask() ([]model.TaskData, error) {
 	return h.getAllTask()
+}
+
+func (h taskHandlerImpl) CreateTask(body []byte) model.CreateTaskResponse {
+	return h.createTask(body)
 }
 
 func NewHandler(u usecase.Usecase) *taskHandlerImpl {

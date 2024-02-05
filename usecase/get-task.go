@@ -2,34 +2,27 @@ package usecase
 
 import (
 	"encoding/json"
+	"task-manager/model"
 )
 
-type TaskData struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Time string `json:"time"`
-}
-
-func (u *usecaseImpl) getAllTask() ([]TaskData, error) {
-
-	var result []TaskData
-
+func (u *usecaseImpl) getAllTask() ([]model.TaskData, error) {
 	jsonData, err := u.repository.GetAllTask()
 	if err != nil {
-		return []TaskData{}, err
+		return nil, err
 	}
 
+	result := make([]model.TaskData, 0, len(jsonData))
+
 	for key, value := range jsonData {
-		v := map[string]interface{}{}
+		v := make(map[string]interface{})
 		bytes, _ := json.Marshal(value)
 		json.Unmarshal(bytes, &v)
-
-		result = append(result, TaskData{
-			Id:   key,
-			Name: v["name"].(string),
-			Time: v["time"].(string),
+		result = append(result, model.TaskData{
+			Id:       key,
+			Name:     v["name"].(string),
+			Time:     v["time"].(string),
+			Complete: v["complete"].(bool),
 		})
-
 	}
 
 	return result, nil
